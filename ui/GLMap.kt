@@ -223,6 +223,7 @@ class GLMap: InputAdapter(), ApplicationListener, GameListener {
                                   "${ElapsedWarningDuration.toInt()}/${TotalWarningDuration.toInt()}\n", 10f, windowHeight - 10f)
       safeZoneHint()
       drawPlayerInfos(typeLocation[Player], selfX, selfY)
+      drawItemInfo()
     }
 
     val zoom = camera.zoom
@@ -442,12 +443,45 @@ class GLMap: InputAdapter(), ApplicationListener, GameListener {
             rect(x - backgroundRadius, y - backgroundRadius, backgroundRadius * 2, backgroundRadius * 2)
             color = finalColor
             rect(x - radius, y - radius, radius * 2, radius * 2)
-            rareFont.draw(spriteBatch,items, x + 20, windowHeight - y + 20)//todo
+            //rareFont.draw(spriteBatch,items, x + 20, windowHeight - y + 20)//todo
           } else {
             color = BLACK
             circle(x, y, backgroundRadius, 10)
             color = finalColor
             circle(x, y, radius, 10)
+          }
+
+          
+        }
+  }
+
+   fun drawItemInfo() {
+    droppedItemLocation.values
+        .forEach {
+          val (x, y) = it._1
+          val items = it._2
+
+          val finalColor = when {
+            "Kar98k" in items || "HK416" in items || "SCAR-L" in items -> rareWeaponColor
+            "Arm3" in items || "Helm3" in items -> rareArmorColor
+            "ACOG" in items || "CQBSS" in items -> rareScopeColor
+            "Extended" in items || "Compensator" in items -> rareAttachColor//todo
+            "heal" in items || "drink" in items -> healItemColor//todo
+            else -> normalItemColor
+          }
+
+          if (finalColor == normalItemColor) {
+            return@forEach
+          }
+
+          val rare = when (finalColor) {
+            rareWeaponColor, rareArmorColor, rareScopeColor, rareAttachColor -> true
+            else -> false
+          }
+          if (rare) {
+            rareFont.draw(spriteBatch,"$items", x + 20, windowHeight - y + 20)//todo
+          } else {
+
           }
 
           
