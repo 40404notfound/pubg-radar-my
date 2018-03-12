@@ -1,9 +1,10 @@
 package pubg.radar.struct
 
 class Item {
-  companion object {
-    
-    val category = mapOf(
+    companion object {
+        // Group
+        // Inner, Outer ?
+        private val category = mapOf(
                 "Attach" to mapOf(
                         "Weapon" to mapOf(
                                 "Lower" to mapOf(
@@ -111,29 +112,27 @@ class Item {
                         "G" to mapOf("01" to mapOf("Lv3" to "Helm3"))
                 )
 
-        )
-    
-    /**
-     * @return null if not good, or short name for it
-     */
-    fun isGood(description: String): String? {
-      try {
-        val start = description.indexOf("Item_")
-        if (start == -1) return null//not item
-        val words = description.substring(start + 5).split("_")
-        var c = category
-        for (word in words) {
-          if (word !in c)
+        ) as Map<String, Any>
+
+        /**
+         * @return null if not good, or short name for it
+         */
+        fun isGood(description: String): String? {
+            try {
+                val start = description.indexOf("Item_")
+                if (start == -1) return null//not item
+                val words = description.substring(start + 5).split("_")
+                var c = category
+                for (word in words) {
+                    if (word !in c) return null
+                    val sub: Any? = c[word]
+                    if (sub is String) return sub
+                    c = sub as Map<String, Any>
+                }
+            } catch (e: Exception) {
+            }
             return null
-          val sub = c[word]
-          if (sub is String)
-            return sub
-          c = sub as Map<String, Any>
         }
-      } catch (e: Exception) {
-      }
-      return null
+
     }
-    
-  }
 }
